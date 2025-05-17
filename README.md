@@ -1,4 +1,4 @@
-# Extended Comm
+# Extended Communication Ranges - ExComm - v1.0.2
 This mod aim to add an interact button to engage a conversation with NPC outside the regular comm range by adding a Long Range Comm Beam to your ship.
 
 ## What it does ?

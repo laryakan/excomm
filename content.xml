@@ -3,7 +3,7 @@
 name="Extended Communication Ranges"
 description="Adds the Long Range Comm Beam to your ship"
 author="Laryakan"
-version="100"
+version="102"
 date="2025-05-17"
 save="false"
 enabled="1" >
