@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <content id="excomm"
 name="Extended Communication Ranges"
-description="Focus your comm beam to a long range target"
+description="Adds the Long Range Comm Beam to your ship"
 author="Laryakan"
 version="100"
 date="2025-05-17"
