@@ -58,7 +58,7 @@
 				<play_sound sound="'ui_modes_scan_long_on'" type="ui"/>
 				<!-- <play_sound sound="'signal_leak_noisy'" type="ui" duration="2s" /> -->
 				<!-- Setting special cockpit tint for the time of excomm charging -->
-				<set_cockpit_tint r="60" g="50" b="75" sethudcolors="true" frequency="10" amplitude="30" endfrequency="0" duration="3s"/>
+				<set_cockpit_tint r="60" g="50" b="75" sethudcolors="true" frequency="2" amplitude="1" endfrequency="0" duration="3s"/>
 				<!-- calculating the time the long range comm beam will need to calibrate -->
 				<set_value name="$DistanceToTarget" exact="player.ship.distanceto.{$TargetObject}"/>
 				<debug_text text="'ExtendedComm -  Distance to target: ' + $DistanceToTarget"/>
