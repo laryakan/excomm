@@ -2,6 +2,7 @@
 <!-- EXTENDED COMM SCRIPT for Extended Communication Ranges mod by Laryakan, May 2025 -->
 <!-- Github : https://github.com/laryakan/excomm -->
 <!-- Nexus <tba> -->
+<!-- mdscript doc : https://wiki.egosoft.com/X%20Rebirth%20Wiki/Modding%20support/Mission%20Director%20Guide/ -->
 <mdscript name="ExtendedComm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<cues>
 		<cue name="ExtendedComm_Start" instantiate="true" namespace="this">
@@ -58,7 +59,17 @@
 				<!-- <play_sound sound="'signal_leak_noisy'" type="ui" duration="2s" /> -->
 				<!-- Setting special cockpit tint for the time of excomm charging -->
 				<set_cockpit_tint r="60" g="50" b="75" sethudcolors="true" frequency="10" amplitude="30" endfrequency="0" duration="3s"/>
-				<show_notification text="'Focusing long range comm beam...'"/>
+				<!-- calculating the time the long range comm beam will need to calibrate -->
+				<set_value name="$DistanceToTarget" exact="player.ship.distanceto.{$TargetShip}"/>
+				<debug_text text="'ExtendedComm -  Distance to target: ' + $DistanceToTarget"/>
+				<!-- using doc rule to convert distance to time ex: (1km + 500m)h -->
+				<set_value name="$TimeToCalibrate" exact="(($DistanceToTarget / 100000)f)s"/>
+				<debug_text text="'ExtendedComm -  Calculated time to calibrate: ' + $TimeToCalibrate"/>
+				<do_if value="$TimeToCalibrate lt 2" >
+					<set_value name="$TimeToCalibrate" exact="2s"/>
+					<debug_text text="'ExtendedComm -  Time too short to calibrate, recalculating: ' + $TimeToCalibrate"/>
+				</do_if>
+				<show_notification text="'Calibrating LRCB, TTC: ' + $TimeToCalibrate + ' seconds'"/>
 				<!-- call convo initializer, must be trigger instantly to work (or this instance will be detroyed and the selected ship not reachable) -->
 				<signal_cue_instantly cue="excomm_convo" param="namespace"/>
 				<!-- reset listener after this cue instance is destroyed -->
@@ -71,9 +82,11 @@
 				<event_cue_signalled/>
 				<!-- player must be in controlled position (piloting a ship) -->
 				<check_value value="player.isincontrolposition"/>
+				<!-- LRCB TTC (time to calibrate and open convo) -->
+				<check_value value="event.param.$TimeToCalibrate"/>
 			</conditions>
-			<!-- adding a delay to simulate comm establishing -->
-			<delay exact="2s"/>
+			<!-- adding a delay to simulate comm establishing (TTC) -->
+			<delay exact="event.param.$TimeToCalibrate"/>
 			<actions>
 				<!-- extend scope to calling cue namespace -->
 				<set_value name="$Super" exact="event.param"/>
@@ -81,7 +94,7 @@
 				<set_value name="$Target" exact="$Super.$Target"/>
 				<set_value name="$TargetShip" exact="$Target.$object"/>
 				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetShip.name"/>
-				<show_notification text="'ExComm established with ' + $TargetShip.name"/>
+				<!-- <show_notification text="'ExComm established with ' + $TargetShip.name"/> -->
 				<!-- Start default conversation-->
 				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
 				<!-- call reset UI and trigger end sound since convo has started -->
