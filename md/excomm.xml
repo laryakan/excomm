@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- EXTENDED COMM SCRIPT for Extended Communication Ranges mod by Laryakan, May 2025 -->
 <!-- Github : https://github.com/laryakan/excomm -->
-<!-- Nexus <tba> -->
+<!-- Nexus : https://www.nexusmods.com/x4foundations/mods/1698 -->
 <!-- mdscript doc : https://wiki.egosoft.com/X%20Rebirth%20Wiki/Modding%20support/Mission%20Director%20Guide/ -->
 <mdscript name="ExtendedComm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<cues>
@@ -47,8 +47,8 @@
 			<actions>
 				<!-- targetted ship -->
 				<set_value name="$Target" exact="event.param"/>
-				<set_value name="$TargetShip" exact="$Target.$object"/>
-				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip.name "/>
+				<set_value name="$TargetObject" exact="$Target.$object"/>
+				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetObject.name "/>
 				<!-- deactivate player activity unless he's travelling -->
 				<do_if value="player.activity != activity.travel">
 					<set_player_activity activity="activity.none"/>
@@ -60,10 +60,10 @@
 				<!-- Setting special cockpit tint for the time of excomm charging -->
 				<set_cockpit_tint r="60" g="50" b="75" sethudcolors="true" frequency="10" amplitude="30" endfrequency="0" duration="3s"/>
 				<!-- calculating the time the long range comm beam will need to calibrate -->
-				<set_value name="$DistanceToTarget" exact="player.ship.distanceto.{$TargetShip}"/>
+				<set_value name="$DistanceToTarget" exact="player.ship.distanceto.{$TargetObject}"/>
 				<debug_text text="'ExtendedComm -  Distance to target: ' + $DistanceToTarget"/>
 				<!-- using doc rule to convert distance to time ex: (1km + 500m)h -->
-				<set_value name="$TimeToCalibrate" exact="(($DistanceToTarget / 100000)f)s"/>
+				<set_value name="$TimeToCalibrate" exact="(($DistanceToTarget / 1000000)f)s"/>
 				<debug_text text="'ExtendedComm -  Calculated time to calibrate: ' + $TimeToCalibrate"/>
 				<do_if value="$TimeToCalibrate lt 2" >
 					<set_value name="$TimeToCalibrate" exact="2s"/>
@@ -92,11 +92,11 @@
 				<set_value name="$Super" exact="event.param"/>
 				<!-- targetted ship -->
 				<set_value name="$Target" exact="$Super.$Target"/>
-				<set_value name="$TargetShip" exact="$Target.$object"/>
-				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetShip.name"/>
-				<!-- <show_notification text="'ExComm established with ' + $TargetShip.name"/> -->
+				<set_value name="$TargetObject" exact="$Target.$object"/>
+				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetObject.name"/>
+				<!-- <show_notification text="'ExComm established with ' + $TargetObject.name"/> -->
 				<!-- Start default conversation-->
-				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
+				<start_conversation actor="$TargetObject.pilot" conversation="default"/>
 				<!-- call reset UI and trigger end sound since convo has started -->
 				<signal_cue cue="excomm_endcharge"/>
 				<!-- reset listener after this cue instance is destroyed -->
