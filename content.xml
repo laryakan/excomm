@@ -1,18 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?><content id="icr"
+<?xml version="1.0" encoding="utf-8"?>
+<content id="excomm"
 name="Extended Communication Ranges"
+description="Focus your comm beam to a long range target"
 author="Laryakan"
 version="100"
-date="2025-05-11"
+date="2025-05-17"
 save="false"
-enabled="1">
-
-<text language=""
-description="Extended Communication Ranges&#13;&#10;
-by Laryakan&#13;&#10;
-&#13;&#10;
-Adds &quot;ICR Comm&quot; button in interaction menu on visible object you can interact with to initiate communication&#13;&#10;
-"/>
-
+enabled="1" >
 <dependency id="ws_2042901274" optional="false" name="SirNukes Mod Support APIs"></dependency>
-<dependency id="kuerteeUIExtensionsAndHUD" optional="false" name="kuertee UI Extensions and HUD"></dependency>
 </content>

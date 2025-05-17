@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- EXTENDED COMM SCRIPT for Extended Communication Ranges mod by Laryakan, May 2025 -->
+<!-- Github : https://github.com/laryakan/excomm -->
+<!-- Nexus <tba> -->
 <mdscript name="ExtendedComm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
 	<cues>
-		<cue name="Add_Interact_Actions" instantiate="true">
-		  <conditions>
-			<event_cue_signalled cue="md.Interact_Menu_API.Get_Actions" />
-		  </conditions>
+		<cue name="ExtendedComm_Start" instantiate="true" namespace="this">
+			<conditions>
+				<event_cue_signalled cue="md.Interact_Menu_API.Get_Actions"/>
+			</conditions>
 			<actions>
-			<set_value name="$target" exact="event.param.$object"/>
+				<set_value name="$target" exact="event.param.$object"/>
 				<!-- List of condition to met to add the ExComm button
 					open interaction menu outside the map menu
 					player is actually piloting
@@ -15,9 +18,7 @@
 				-->
 				<do_if value="event.param.$showPlayerInteractions and player.controlled.isclass.ship and $target.isclass.{class.destructible} and $target.isclass.ship and player.isincontrolposition">
 					<!-- add the button, vanilla icons are listed in libraries/icons.xml, for this one, search an icon 32*32 -->
-					<signal_cue_instantly
-						cue="md.Interact_Menu_API.Add_Action"
-						param = "table[
+					<signal_cue_instantly cue="md.Interact_Menu_API.Add_Action" param="table[
 						$id         = 'excom_interact',
 						$section    = 'interaction',
 						$text       = 'Extended Comm',
@@ -28,14 +29,13 @@
 						]"/>
 				</do_if>
 				<!-- reset listener after this cue instance is destroyed -->
-				<reset_cue cue="this" />
+				<reset_cue cue="this"/>
 			</actions>
 		</cue>
-		
 		<!-- cue to add a little effect before convo, entry point -->
-		<cue name="excomm_charge"  instantiate="true">
+		<cue name="excomm_charge" instantiate="true">
 			<conditions>
-				<event_cue_signalled />
+				<event_cue_signalled/>
 				<!-- cue must be triggered with a param object -->
 				<check_value value="event.param.$object"/>
 				<!-- param object must be a ship -->
@@ -45,95 +45,76 @@
 			</conditions>
 			<actions>
 				<!-- targetted ship -->
-				<set_value name="$Target" exact="event.param" />
-				<set_value name="$TargetShip" exact="$Target.$object" />
-				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip.id " />
+				<set_value name="$Target" exact="event.param"/>
+				<set_value name="$TargetShip" exact="$Target.$object"/>
+				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip.name "/>
 				<!-- deactivate player activity unless he's travelling -->
 				<do_if value="player.activity != activity.travel">
-					<set_player_activity activity="activity.none" />
+					<set_player_activity activity="activity.none"/>
 				</do_if>
-
-				<!-- @todo maybe add a voice line from Betty ? -->
+				<!-- @todo maybe add a voice line from Betty ? and find a better matching sound ?-->
 				<!-- add sound from long rang can mode activated -->
-				<play_sound sound="'ui_modes_scan_long_on'" type="ui" />
-				<!-- <play_sound sound="'signal_leak_noisy_small'" object="player.entity.room" type="ambient" duration="2s" /> -->
-
+				<play_sound sound="'ui_modes_scan_long_on'" type="ui"/>
+				<!-- <play_sound sound="'signal_leak_noisy'" type="ui" duration="2s" /> -->
 				<!-- Setting special cockpit tint for the time of excomm charging -->
-				<set_cockpit_tint
-					r="10"
-					g="100"
-					b="50"
-					sethudcolors="true"
-					frequency="10"
-					amplitude="30"
-					endfrequency="0"
-					duration="2s"
-				/>
-
-				<show_notification text="'Engaging long range comm beam...'"/>
-				
-				<signal_cue_instantly cue="excomm_endcharge" />
-
-				<!-- call convo initializer -->
-				<signal_cue_instantly cue="excomm_convo" param="namespace" />
-
+				<set_cockpit_tint r="60" g="50" b="75" sethudcolors="true" frequency="10" amplitude="30" endfrequency="0" duration="3s"/>
+				<show_notification text="'Focusing long range comm beam...'"/>
+				<!-- call convo initializer, must be trigger instantly to work (or this instance will be detroyed and the selected ship not reachable) -->
+				<signal_cue_instantly cue="excomm_convo" param="namespace"/>
 				<!-- reset listener after this cue instance is destroyed -->
-				<reset_cue cue="this" />
+				<reset_cue cue="this"/>
 			</actions>
 		</cue>
-
 		<!-- cue initiating convo -->
-		<cue name="excomm_convo"  instantiate="true">
+		<cue name="excomm_convo" instantiate="true">
 			<conditions>
-				<event_cue_signalled />
-				<!-- player must be in controlled position (piloting a ship) -->
-				<check_value value="player.isincontrolposition"/>
-			</conditions>
-			<actions>
-				<!-- extend scope to calling cue namespace -->
-				<set_value name="$Super" exact="event.param" />
-				<!-- targetted ship -->
-				<set_value name="$Target" exact="$Super.$Target" />
-				<set_value name="$TargetShip" exact="$Target.$object" />
-				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetShip.id" />
-
-				<show_notification text="'ExComm established with ' + $TargetShip.id"/>
-
-				<!-- Start default conversation-->
-				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
-
-				<!-- reset listener after this cue instance is destroyed -->
-				<reset_cue cue="this" />
-			</actions>
-		</cue>
-
-		<!-- cue to end charge effect before engaging convo -->
-		<cue name="excomm_endcharge"  instantiate="true">
-			<conditions>
-				<event_cue_signalled />
+				<event_cue_signalled/>
 				<!-- player must be in controlled position (piloting a ship) -->
 				<check_value value="player.isincontrolposition"/>
 			</conditions>
 			<!-- adding a delay to simulate comm establishing -->
-			<delay exact="2s" />
+			<delay exact="2s"/>
+			<actions>
+				<!-- extend scope to calling cue namespace -->
+				<set_value name="$Super" exact="event.param"/>
+				<!-- targetted ship -->
+				<set_value name="$Target" exact="$Super.$Target"/>
+				<set_value name="$TargetShip" exact="$Target.$object"/>
+				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetShip.name"/>
+				<show_notification text="'ExComm established with ' + $TargetShip.name"/>
+				<!-- Start default conversation-->
+				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
+				<!-- call reset UI and trigger end sound since convo has started -->
+				<signal_cue cue="excomm_endcharge"/>
+				<!-- reset listener after this cue instance is destroyed -->
+				<reset_cue cue="this"/>
+			</actions>
+		</cue>
+		<!-- cue to end charge effect before engaging convo -->
+		<cue name="excomm_endcharge" instantiate="true">
+			<conditions>
+				<event_cue_signalled/>
+				<!-- player must be in controlled position (piloting a ship) -->
+				<check_value value="player.isincontrolposition"/>
+			</conditions>
 			<actions>
 				<do_if value="player.activity == activity.travel">
 					<!-- In case the player is still travelling, we rollback to travel cockpit tint, else return to default -->
-					<debug_text text="'ExtendedComm - reset hud color to travel'" />
-					<set_cockpit_tint color="'playeractivity_travel'" sethudcolors="true" />
+					<debug_text text="'ExtendedComm - reset hud color to travel'"/>
+					<set_cockpit_tint color="'playeractivity_travel'" sethudcolors="true"/>
 				</do_if>
 				<do_else>
 					<!-- reset cockpit -->
-					<debug_text text="'ExtendedComm - reset hud color to default'" />
-					<set_cockpit_tint resettodefault="true" sethudcolors="true" />
-				</do_else> 
-				
+					<debug_text text="'ExtendedComm - reset hud color to default'"/>
+					<set_cockpit_tint resettodefault="true" sethudcolors="true"/>
+				</do_else>
 				<!-- <debug_text text="'ExtendedComm - reset hud color to default'" /> -->
 				<!-- <set_cockpit_tint resettodefault="true" sethudcolors="true" /> -->
-				
-				<play_sound sound="'ui_modes_scan_long_off'" type="ui" />
+				<!-- @todo find a better matching ui sound ? -->
+				<play_sound sound="'ui_modes_scan_long_off'" type="ui"/>
+				<!-- <play_sound sound="'signal_leak_discharge'" type="ui" /> -->
 				<!-- reset listener after this cue instance is destroyed -->
-				<reset_cue cue="this" />
+				<reset_cue cue="this"/>
 			</actions>
 		</cue>
 	</cues>

@@ -6,13 +6,13 @@ It simply add an interact button on eligible target (outside of the MapMenu) to 
 
 ## Technically ?
 - Listen to md.Interact_Menu_API.Get_Actions
-- md.Interact_Menu_API.Add_Action on class.destructible
-- Engage convo
+- md.Interact_Menu_API.Add_Action on class.destructible + ship when player is piloting
+- Add a little sound + hud effect for 2 seconds while the "Long Range Comm Beam" is charging
+- Engage convo with target pilot
 
 ## Requirements ?
 - SirNukes Mod Support APIs
-- kuertee UI Extensions and HUD (normally)
 
-- github : https://github.com/laryakan/fixrepresentative
-- nexus : https://www.nexusmods.com/x4foundations/mods/1702
+- github : https://github.com/laryakan/excomm
+- nexus : https://www.nexusmods.com/x4foundations/mods/<tba>
 - nexus user : https://next.nexusmods.com/profile/Laryakan
