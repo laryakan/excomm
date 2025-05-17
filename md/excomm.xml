@@ -7,8 +7,14 @@
 		  </conditions>
 			<actions>
 			<set_value name="$target" exact="event.param.$object"/>
-				<!-- <debug_text text="'ExtendedComm -  Button shown'" /> -->
-				<do_if value="event.param.$showPlayerInteractions and $target.isclass.{class.destructible} and $target.isclass.ship ">
+				<!-- List of condition to met to add the ExComm button
+					open interaction menu outside the map menu
+					player is actually piloting
+					target is destrucible (and not already destroyed)
+					target is a ship
+				-->
+				<do_if value="event.param.$showPlayerInteractions and player.controlled.isclass.ship and $target.isclass.{class.destructible} and $target.isclass.ship">
+					<!-- add the button, vanilla icons are listed in libraries/icons.xml, for this one, search an icon 32*32 -->
 					<signal_cue_instantly
 						cue="md.Interact_Menu_API.Add_Action"
 						param = "table[
@@ -16,29 +22,73 @@
 						$section    = 'interaction',
 						$text       = 'Extended Comm',
 						$mouseover  = '%s %s'.['Extended Comm', $target.name],
-						$icon       = 'order_follow',
-						$mouseover_icon = 'order_follow',
-						$callback   = excomm,
+						$icon       = 'missiontype_scan',
+						$mouseover_icon = 'missiontype_scan',
+						$callback   = excomm_effect,
 						]"/>
 				</do_if>
 				<!-- reset listener after this cue instance is destroyed -->
 				<reset_cue cue="this" />
 			</actions>
 		</cue>
-		<cue name="excomm">
+		<!-- cue to add a little effect -->
+		<cue name="excomm_effect">
 			<conditions>
 				<event_cue_signalled />
+				<!-- cue must be triggered with a param object -->
+				<check_value value="event.param.$object"/>
+				<!-- param object must be a ship -->
+				<check_value value="event.param.$object.isclass.ship"/>
 			</conditions>
 			<actions>
-				<!-- <debug_text text="'ExtendedComm -  event.object: ' + event.object + ' (' + @event.object.knownname + ')'" /> -->
-				<!-- <debug_text text="'ExtendedComm - event.param: ' + @event.param + '(' + @event.param.knownname + ')'" /> -->
-				<!-- <debug_text text="'ExtendedComm - event.param: ' + @event.param.$object + '(' + @event.param.$object.knownname + ')'" /> -->
 				<!-- targetted ship -->
-				<set_value name="$TargetShip" exact="@event.param.$object" />
+				<set_value name="$TargetShip" exact="event.param.$object" />
 				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip" />
-				
+
+				<!-- Betty - will try to find a better line -->
+				<speak actor="player.computer" caninterrupt="false" line="30292010" comment="I'm on it..." />
+				<play_sound sound="ui_modes_scan_long_on" type="ui" />
+				<!-- Setting special cockpit tint for the time of the convo -->
+				<set_cockpit_tint
+					r="50"
+					g="150"
+					b="150"
+					sethudcolors="true"
+				/>
+
+				<show_notification text="'Engaging long range comm beam...'"/>
+
+				<!-- call convo initializer -->
+				<signal_cue_instantly cue="excomm_convo" param="$TargetShip" />
+
+				<!-- reset cockpit -->
+				<set_cockpit_tint resettodefault="true" sethudcolors="true" />
+				<play_sound sound="ui_modes_scan_long_off" type="ui" />
+
+				<!-- reset listener after this cue instance is destroyed -->
+				<reset_cue cue="this" />
+			</actions>
+		</cue>
+
+		<!-- cue initiating convo -->
+		<cue name="excomm_convo">
+			<conditions>
+				<event_cue_signalled />
+				<!-- param must be a ship -->
+				<check_value value="event.param.isclass.ship"/>
+			</conditions>
+			<!-- adding a delay to simulate comm establishing -->
+			<delay min="1s" max="3s"/>
+			<actions>
+				<!-- to add special effect on ui, check ou md/modes.xml -->
+				<!-- targetted ship -->
+				<set_value name="$TargetShip" exact="event.param" />
+
+				<show_notification text="'- ExComm established -'"/>
+
 				<!-- Start default conversation-->
 				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
+
 				<!-- reset listener after this cue instance is destroyed -->
 				<reset_cue cue="this" />
 			</actions>
