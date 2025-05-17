@@ -18,6 +18,8 @@ It simply add an interact button on eligible target (outside of the Map Menu) to
 
 **TLDR; Right click on a ship (outside the map), select "Extended Comm" then wait things to happen**
 
+**Warning ! HUD flashes may (or may not) cause an epileptic seizure, I made an alternate version with a lower calibration frequency to prevent this**
+
 ## Will the LRCB will get an update ?
 Maybe. The actual version of the LRCB know where a ship cockpit is to focus on it, but station are too large and with too many different configurations for the LRCB to target the specific room where a manager is.
 This may change in the future.
