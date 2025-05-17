@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mdscript name="ExtendedComm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+	<cues>
+		<cue name="Add_Interact_Actions" instantiate="true">
+		  <conditions>
+			<event_cue_signalled cue="md.Interact_Menu_API.Get_Actions" />
+		  </conditions>
+			<actions>
+			<set_value name="$target" exact="event.param.$object"/>
+				<!-- <debug_text text="'ExtendedComm -  Button shown'" /> -->
+				<do_if value="event.param.$showPlayerInteractions and $target.isclass.{class.destructible} and $target.isclass.ship ">
+					<signal_cue_instantly
+						cue="md.Interact_Menu_API.Add_Action"
+						param = "table[
+						$id         = 'excom_interact',
+						$section    = 'interaction',
+						$text       = 'Extended Comm',
+						$mouseover  = '%s %s'.['Extended Comm', $target.name],
+						$icon       = 'order_follow',
+						$mouseover_icon = 'order_follow',
+						$callback   = excomm,
+						]"/>
+				</do_if>
+				<!-- reset listener after this cue instance is destroyed -->
+				<reset_cue cue="this" />
+			</actions>
+		</cue>
+		<cue name="excomm">
+			<conditions>
+				<event_cue_signalled />
+			</conditions>
+			<actions>
+				<!-- <debug_text text="'ExtendedComm -  event.object: ' + event.object + ' (' + @event.object.knownname + ')'" /> -->
+				<!-- <debug_text text="'ExtendedComm - event.param: ' + @event.param + '(' + @event.param.knownname + ')'" /> -->
+				<!-- <debug_text text="'ExtendedComm - event.param: ' + @event.param.$object + '(' + @event.param.$object.knownname + ')'" /> -->
+				<!-- targetted ship -->
+				<set_value name="$TargetShip" exact="@event.param.$object" />
+				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip" />
+				
+				<!-- Start default conversation-->
+				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
+				<!-- reset listener after this cue instance is destroyed -->
+				<reset_cue cue="this" />
+			</actions>
+		</cue>
+	</cues>
+</mdscript>
