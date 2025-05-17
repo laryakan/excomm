@@ -13,7 +13,7 @@
 					target is destrucible (and not already destroyed)
 					target is a ship
 				-->
-				<do_if value="event.param.$showPlayerInteractions and player.controlled.isclass.ship and $target.isclass.{class.destructible} and $target.isclass.ship">
+				<do_if value="event.param.$showPlayerInteractions and player.controlled.isclass.ship and $target.isclass.{class.destructible} and $target.isclass.ship and player.isincontrolposition">
 					<!-- add the button, vanilla icons are listed in libraries/icons.xml, for this one, search an icon 32*32 -->
 					<signal_cue_instantly
 						cue="md.Interact_Menu_API.Add_Action"
@@ -24,46 +24,58 @@
 						$mouseover  = '%s %s'.['Extended Comm', $target.name],
 						$icon       = 'missiontype_scan',
 						$mouseover_icon = 'missiontype_scan',
-						$callback   = excomm_effect,
+						$callback   = excomm_charge,
 						]"/>
 				</do_if>
 				<!-- reset listener after this cue instance is destroyed -->
 				<reset_cue cue="this" />
 			</actions>
 		</cue>
-		<!-- cue to add a little effect -->
-		<cue name="excomm_effect">
+		
+		<!-- cue to add a little effect before convo, entry point -->
+		<cue name="excomm_charge"  instantiate="true">
 			<conditions>
 				<event_cue_signalled />
 				<!-- cue must be triggered with a param object -->
 				<check_value value="event.param.$object"/>
 				<!-- param object must be a ship -->
 				<check_value value="event.param.$object.isclass.ship"/>
+				<!-- player must be in controlled position (piloting a ship) -->
+				<check_value value="player.isincontrolposition"/>
 			</conditions>
 			<actions>
 				<!-- targetted ship -->
-				<set_value name="$TargetShip" exact="event.param.$object" />
-				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip" />
+				<set_value name="$Target" exact="event.param" />
+				<set_value name="$TargetShip" exact="$Target.$object" />
+				<debug_text text="'ExtendedComm -  Trigger on: ' + $TargetShip.id " />
+				<!-- deactivate player activity unless he's travelling -->
+				<do_if value="player.activity != activity.travel">
+					<set_player_activity activity="activity.none" />
+				</do_if>
 
-				<!-- Betty - will try to find a better line -->
-				<speak actor="player.computer" caninterrupt="false" line="30292010" comment="I'm on it..." />
-				<play_sound sound="ui_modes_scan_long_on" type="ui" />
-				<!-- Setting special cockpit tint for the time of the convo -->
+				<!-- @todo maybe add a voice line from Betty ? -->
+				<!-- add sound from long rang can mode activated -->
+				<play_sound sound="'ui_modes_scan_long_on'" type="ui" />
+				<!-- <play_sound sound="'signal_leak_noisy_small'" object="player.entity.room" type="ambient" duration="2s" /> -->
+
+				<!-- Setting special cockpit tint for the time of excomm charging -->
 				<set_cockpit_tint
-					r="50"
-					g="150"
-					b="150"
+					r="10"
+					g="100"
+					b="50"
 					sethudcolors="true"
+					frequency="10"
+					amplitude="30"
+					endfrequency="0"
+					duration="2s"
 				/>
 
 				<show_notification text="'Engaging long range comm beam...'"/>
+				
+				<signal_cue_instantly cue="excomm_endcharge" />
 
 				<!-- call convo initializer -->
-				<signal_cue_instantly cue="excomm_convo" param="$TargetShip" />
-
-				<!-- reset cockpit -->
-				<set_cockpit_tint resettodefault="true" sethudcolors="true" />
-				<play_sound sound="ui_modes_scan_long_off" type="ui" />
+				<signal_cue_instantly cue="excomm_convo" param="namespace" />
 
 				<!-- reset listener after this cue instance is destroyed -->
 				<reset_cue cue="this" />
@@ -71,24 +83,55 @@
 		</cue>
 
 		<!-- cue initiating convo -->
-		<cue name="excomm_convo">
+		<cue name="excomm_convo"  instantiate="true">
 			<conditions>
 				<event_cue_signalled />
-				<!-- param must be a ship -->
-				<check_value value="event.param.isclass.ship"/>
+				<!-- player must be in controlled position (piloting a ship) -->
+				<check_value value="player.isincontrolposition"/>
 			</conditions>
-			<!-- adding a delay to simulate comm establishing -->
-			<delay min="1s" max="3s"/>
 			<actions>
-				<!-- to add special effect on ui, check ou md/modes.xml -->
+				<!-- extend scope to calling cue namespace -->
+				<set_value name="$Super" exact="event.param" />
 				<!-- targetted ship -->
-				<set_value name="$TargetShip" exact="event.param" />
+				<set_value name="$Target" exact="$Super.$Target" />
+				<set_value name="$TargetShip" exact="$Target.$object" />
+				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetShip.id" />
 
-				<show_notification text="'- ExComm established -'"/>
+				<show_notification text="'ExComm established with ' + $TargetShip.id"/>
 
 				<!-- Start default conversation-->
 				<start_conversation actor="$TargetShip.pilot" conversation="default"/>
 
+				<!-- reset listener after this cue instance is destroyed -->
+				<reset_cue cue="this" />
+			</actions>
+		</cue>
+
+		<!-- cue to end charge effect before engaging convo -->
+		<cue name="excomm_endcharge"  instantiate="true">
+			<conditions>
+				<event_cue_signalled />
+				<!-- player must be in controlled position (piloting a ship) -->
+				<check_value value="player.isincontrolposition"/>
+			</conditions>
+			<!-- adding a delay to simulate comm establishing -->
+			<delay exact="2s" />
+			<actions>
+				<do_if value="player.activity == activity.travel">
+					<!-- In case the player is still travelling, we rollback to travel cockpit tint, else return to default -->
+					<debug_text text="'ExtendedComm - reset hud color to travel'" />
+					<set_cockpit_tint color="'playeractivity_travel'" sethudcolors="true" />
+				</do_if>
+				<do_else>
+					<!-- reset cockpit -->
+					<debug_text text="'ExtendedComm - reset hud color to default'" />
+					<set_cockpit_tint resettodefault="true" sethudcolors="true" />
+				</do_else> 
+				
+				<!-- <debug_text text="'ExtendedComm - reset hud color to default'" /> -->
+				<!-- <set_cockpit_tint resettodefault="true" sethudcolors="true" /> -->
+				
+				<play_sound sound="'ui_modes_scan_long_off'" type="ui" />
 				<!-- reset listener after this cue instance is destroyed -->
 				<reset_cue cue="this" />
 			</actions>
