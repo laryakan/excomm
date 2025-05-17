@@ -63,7 +63,7 @@
 				<set_value name="$DistanceToTarget" exact="player.ship.distanceto.{$TargetObject}"/>
 				<debug_text text="'ExtendedComm -  Distance to target: ' + $DistanceToTarget"/>
 				<!-- using doc rule to convert distance to time ex: (1km + 500m)h -->
-				<set_value name="$TimeToCalibrate" exact="(($DistanceToTarget / 1000000)f)s"/>
+				<set_value name="$TimeToCalibrate" exact="(($DistanceToTarget / 100000)f)s"/>
 				<debug_text text="'ExtendedComm -  Calculated time to calibrate: ' + $TimeToCalibrate"/>
 				<do_if value="$TimeToCalibrate lt 2" >
 					<set_value name="$TimeToCalibrate" exact="2s"/>

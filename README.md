@@ -28,7 +28,7 @@ This may change in the future.
 - Listen to md.Interact_Menu_API.Get_Actions
 - md.Interact_Menu_API.Add_Action on class.destructible + ship when player is piloting
 - Add a little sound + hud effect for 2 seconds while the "Long Range Comm Beam" is calibrating/focusing
-- Calculate the time of charge depending of the target distance to your ship (ratio is Distance(m) / 1000000 in seconds), but can't be lower than 2 seconds
+- Calculate the time of charge depending of the target distance to your ship (ratio is Distance(m) / 100000 in seconds), but can't be lower than 2 seconds
 - Engage convo with target pilot
 - Reset HUD
 
