@@ -33,6 +33,15 @@ This may change in the future.
 ## Requirements ?
 - SirNukes Mod Support APIs
 
+## Redistribution and modification
+
+### BSD 2-Clause License
+
+#### Copyright (c) 2025, laryakan
+
+You are free to use, modify and redistribute any code or assets of mine which is not directly extracted from the game as soon as you mention the above Copyright.
+A link to my github is provided below. A little mention is all I ask.
+
 - github : https://github.com/laryakan/excomm
 - nexus : https://www.nexusmods.com/x4foundations/mods/1698
 - nexus user : https://next.nexusmods.com/profile/Laryakan
