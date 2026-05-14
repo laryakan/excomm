@@ -15,9 +15,9 @@
 					open interaction menu outside the map menu
 					player is actually piloting
 					target is destrucible (and not already destroyed)
-					target is a ship
+					target is a ship or a station
 				-->
-				<do_if value="event.param.$showPlayerInteractions and player.controlled.isclass.ship and $target.isclass.{class.destructible} and $target.isclass.ship and player.isincontrolposition">
+				<do_if value="event.param.$showPlayerInteractions and player.controlled.isclass.ship and ($target.isclass.ship or $target.isclass.station) and ($target.isclass.{class.destructible} or $target.isclass.station) and player.isincontrolposition">
 					<!-- add the button, vanilla icons are listed in libraries/icons.xml, for this one, search an icon 32*32 -->
 					<signal_cue_instantly cue="md.Interact_Menu_API.Add_Action" param="table[
 						$id         = 'excom_interact',
@@ -39,8 +39,8 @@
 				<event_cue_signalled/>
 				<!-- cue must be triggered with a param object -->
 				<check_value value="event.param.$object"/>
-				<!-- param object must be a ship -->
-				<check_value value="event.param.$object.isclass.ship"/>
+				<!-- param object must be a ship or station -->
+				<check_value value="event.param.$object.isclass.ship or event.param.$object.isclass.station"/>
 				<!-- player must be in controlled position (piloting a ship) -->
 				<check_value value="player.isincontrolposition"/>
 			</conditions>
@@ -95,8 +95,20 @@
 				<set_value name="$TargetObject" exact="$Target.$object"/>
 				<debug_text text="'ExtendedComm -  ExComm established with ' + $TargetObject.name"/>
 				<!-- <show_notification text="'ExComm established with ' + $TargetObject.name"/> -->
-				<!-- Start default conversation-->
-				<start_conversation actor="$TargetObject.pilot" conversation="default"/>
+				<!-- Start default conversation -->
+				<do_if value="$TargetObject.isclass.station and $TargetObject.assignedcontrolentity.{controlpost.manager}">
+					<start_conversation actor="$TargetObject.assignedcontrolentity.{controlpost.manager}" conversation="default"/>
+				</do_if>
+				<do_else>
+					<do_if value="$TargetObject.pilot">
+						<!-- If there is a Pilot, contact them -->
+						<start_conversation actor="$TargetObject.pilot" conversation="default"/>
+					</do_if>
+					<do_else>
+						<!-- If no pilot, try to contact target directly (last fallback) -->
+						<start_conversation actor="$TargetObject" conversation="default"/>
+					</do_else>
+				</do_else>
 				<!-- call reset UI and trigger end sound since convo has started -->
 				<signal_cue cue="excomm_endcharge"/>
 				<!-- reset listener after this cue instance is destroyed -->
