@@ -2,7 +2,7 @@
 This mod aim to add an interact button to engage a conversation with NPC outside the regular comm range by adding a Long Range Comm Beam to your ship.
 
 ## What it does ?
-This mod grants your ship the ability to use the "Long Range Comm Beam" (LRCB), which instead of granting you an instant communication with anybody within 40km grants you the ability to reach ships in your current sector with an accurate precision after a little delay.
+This mod grants your ship the ability to use the "Long Range Comm Beam" (LRCB), which instead of granting you an instant communication with anybody within 40km grants you the ability to reach ships and stations in your current sector with an accurate precision after a little delay.
 It simply add an interact button on eligible target (outside of the Map Menu) to engage conversation. But, there is some limitations (see below).
 
 ## How to use it ?
