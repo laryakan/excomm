@@ -53,7 +53,8 @@
 				<do_if value="player.activity != activity.travel">
 					<set_player_activity activity="activity.none"/>
 				</do_if>
-				<!-- @todo maybe add a voice line from Betty ? and find a better matching sound ?-->
+				<!-- Betty announces that the long-range connection is being established -->
+				<speak actor="player.computer" page="10002" line="50000" priority="100" caninterrupt="false"/>
 				<!-- add sound from long rang can mode activated -->
 				<play_sound sound="'ui_modes_scan_long_on'" type="ui"/>
 				<!-- <play_sound sound="'signal_leak_noisy'" type="ui" duration="2s" /> -->
