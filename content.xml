@@ -1,42 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <content id="ws_3487393047"
-         name="Extended Communication Ranges"
+         name="Extended Communication Ranges (NoNukes Version)"
          description="# Extended Communication Ranges - ExComm (Nexus Version)
-This mod aim to add an interact button to engage a conversation with NPC outside the regular comm range by adding a Long Range Comm Beam to your ship.
-
-## What it does ?
-This mod grants your ship the ability to use the &quot;Long Range Comm Beam&quot; (LRCB), which instead of granting you an instant communication with anybody within 40km grants you the ability to reach ships in your current sector with an accurate precision after a little delay.
-It simply add an interact button on eligible target (outside of the Map Menu) to engage conversation. But, there is some limitations (see below).
-
-## How to use it ?
-*First and foremost, you must know that your ship technical limitation won&apos;t grant you the ability to focus the LRCB to reach a target in another sector.*
-*You must also know that the LRCB is only able to work on a entity (ship or station) you&apos;re able to target, otherwise, it can&apos;t be precise enough to be engaged (target must be visible, either on radar, satellite or in close proximity one of your station, and in the same sector).*
-*And last but not least, to activate the LRCB, you must be piloting your ship, for the same reason that you can&apos;t active the Long Range Scan Mode if you&apos;re not piloting.*
-*It should be obvious, but it need to be remembered.*
-- First, target a ship or station (by clicking it on your screen, radar, or pressing &quot;T&quot; (default binding) after selecting it on you map).
-- Next, outside the Map (if you opened it), right click on the ship or station (on your screen, or screen edge if you&apos;re not facing it, or on the radar) and click the action &quot;Extended Comm&quot;.
-- While the LRCB is calibrating to your target, your HUD may flicker a bit because of the powersurge, you may also here the &quot;Long Range Scan Mode&quot; activation sound since the LRCB is reliying on it (that&apos;s why the power surge).
-- The LRCB have a &quot;Time To Calibrate&quot; (TTC), you will be notified in the notification area how many time it will take depending of the distance between ou and your target, please note that the minimum charging time is 2 seconds.
-- Wait a few seconds and TADA, your communication with the target ship is established
-
-**TLDR; Right click on a ship or station (outside the map), select &quot;Extended Comm&quot; then wait things to happen**
-
-## Technically ?
-- Listen to md.Interact_Menu_API.Get_Actions
-- md.Interact_Menu_API.Add_Action on class.destructible + ship when player is piloting
-- Add a little sound + hud effect for 2 seconds while the &quot;Long Range Comm Beam&quot; is calibrating/focusing
-- Calculate the time of charge depending of the target distance to your ship (ratio is Distance(m) / 300000 in seconds), but can&apos;t be lower than 2 seconds
-- Engage convo with target pilot
-- Reset HUD
-
-## Requirements ?
-- SirNukes Mod Support APIs
-
+This mod aim to add a way to engage a conversation with NPC outside the regular comm range by adding a Long Range Comm Beam to your ship.
+This alternative version of the mod to not need SirNukes API to work. 
+                      
+To use Long Range Comm Beam:
+                      - Select a target (ship or station)
+                      - Open Long Range Scan (default key: 'L')
+                      - A menu will open to ask you if you want to use the regular Long Range Scan or redirect power to the Long Range Comm Beam (ExComm LRCB by-pass).
+                      
 ## Redistribution and modification
 
 ### BSD 2-Clause License
 
-#### Copyright (c) 2025, laryakan
+#### Copyright (c) 2026, laryakan
 
 You are free to use, modify and redistribute any code or assets of mine which is not directly extracted from the game as soon as you mention the above Copyright.
 A link to my github is provided below. A little mention is all I ask.
@@ -46,11 +24,8 @@ A link to my github is provided below. A little mention is all I ask.
 - nexus user : https://next.nexusmods.com/profile/Laryakan
 "
          author="Laryakan"
-         version="110"
+         version="111"
          date="2026-05-14"
          save="false"
          lastupdate="1778770742">
-	<dependency id="ws_2042901274"
-	            optional="false"
-	            name="SirNukes Mod Support APIs"/>
 </content>
