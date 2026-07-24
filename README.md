@@ -38,6 +38,11 @@ It simply add an interact button on eligible target (outside of the Map Menu) to
 You are free to use, modify and redistribute any code or assets of mine which is not directly extracted from the game as soon as you mention the above Copyright.
 A link to my github is provided below. A little mention is all I ask.
 
+--- THIS MOD ---
 - github : https://github.com/laryakan/excomm
-- nexus : https://www.nexusmods.com/x4foundations/mods/1698
-- nexus user : https://next.nexusmods.com/profile/Laryakan
+- nexus : https://www.nexusmods.com/x4foundations/mods/1698 
+- steam : https://steamcommunity.com/sharedfiles/filedetails/?id=3487393047
+
+--- OTHER MODS ---
+- nexus user mods : https://www.nexusmods.com/games/x4foundations/mods?author=laryakan
+- steam user mods : https://steamcommunity.com/id/laryakan/myworkshopfiles/?appid=392160
